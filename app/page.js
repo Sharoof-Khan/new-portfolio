@@ -2,24 +2,59 @@
 
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  ExternalLink, 
-  Code2, 
-  Database, 
-  Layout, 
-  Server, 
-  Terminal, 
-  Cpu, 
-  Menu, 
+import {
+  Github,
+  Linkedin,
+  Mail,
+  ExternalLink,
+  Code2,
+  Database,
+  Layout,
+  Server,
+  Terminal,
+  Cpu,
+  Menu,
   X,
   ChevronDown,
   AlertCircle,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Calendar,
+  MapPin
 } from 'lucide-react';
+
+export function calculateExperienceFromPeriod(periodStr) {
+  const [startStr, endStr] = periodStr.split(" - ");
+
+  const start = new Date(startStr + " 1");
+  const end =
+    endStr.toLowerCase() === "present"
+      ? new Date()
+      : new Date(endStr + " 1");
+
+  let years = end.getFullYear() - start.getFullYear();
+  let months = end.getMonth() - start.getMonth();
+
+  months += 1;
+
+  if (months >= 12) {
+    years += Math.floor(months / 12);
+    months = months % 12;
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const parts = [];
+  if (years > 0) parts.push(`${years} yr${years > 1 ? "s" : ""}`);
+  if (months > 0) parts.push(`${months} month${months > 1 ? "s" : ""}`);
+
+  return parts.length ? parts.join(" ") : "0 months";
+}
+
+
 
 // --- Assets & Data ---
 // Using placeholders since direct asset access is blocked, but data is real based on search results.
@@ -60,7 +95,7 @@ const PROJECTS = [
   {
     title: "One Nation One Product",
     description: "Data-heavy dashboard supporting advanced filtering, charting, and bulk export capabilities. Optimized component structure to handle thousands of rows without performance degradation. Implemented form validation using React Hook Form and added subtle animations with Framer Motion to enhance usability. Built the system to scale as data volume increases",
-    tech: ["React", "Tailwind CSS", "Redux Toolkit", "RTK Query","React Hook Form","Framer Motion"],
+    tech: ["React", "Tailwind CSS", "Redux Toolkit", "RTK Query", "React Hook Form", "Framer Motion"],
     github: "https://github.com/Sharoof-Khan-Torero",
     live: "https://www.liveapp.in/",
     color: "from-orange-500 to-red-400"
@@ -75,6 +110,38 @@ const PROJECTS = [
   // }
 ];
 
+const EXPERIENCE = [
+  {
+    role: "Web Developer",
+    company: "Torero Softwares Limited",
+    type: "Full-time",
+    period: "Mar 2024 - Present",
+    duration: "1 yr 9 mos",
+    location: "Mumbai, Maharashtra, India",
+    description: "Working on scalable web solutions and frontend architecture using modern React ecosystems.",
+    skills: ["React.js", "Redux Toolkit"]
+  },
+  {
+    role: "Full Stack Developer",
+    company: "Don Bosco - Nerul",
+    type: "Full-time",
+    period: "May 2023 - Jan 2024",
+    duration: "9 mos",
+    location: "Navi Mumbai, Maharashtra, India",
+    description: "Created the Don Bosco School website frontend from scratch using React and Tailwind CSS. Played a pivotal role in enhancing the school's online presence, making information readily accessible to students and parents.",
+    skills: ["React.js", "Redux Toolkit", "Tailwind CSS"]
+  },
+  {
+    role: "Software Developer",
+    company: "Boppo Technologies",
+    type: "Full-time",
+    period: "Aug 2022 - May 2023",
+    duration: "10 mos",
+    location: "Mumbai, Maharashtra, India",
+    description: "Developed software solutions with a focus on component reusability and cross-platform compatibility.",
+    skills: ["React.js", "React Native"]
+  }
+];
 // --- Components ---
 
 const SectionHeading = ({ children, subtitle }) => (
@@ -117,17 +184,17 @@ const ProjectCard = ({ project }) => (
         ))}
       </div>
       <div className="flex gap-4 mt-auto">
-        <a 
-          href={project.github} 
-          target="_blank" 
+        <a
+          href={project.github}
+          target="_blank"
           rel="noopener noreferrer"
           className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-slate-800 text-white font-medium hover:bg-slate-700 transition-colors border border-slate-700"
         >
           <Github size={18} /> Code
         </a>
-        <a 
-          href={project.live} 
-          target="_blank" 
+        <a
+          href={project.live}
+          target="_blank"
           rel="noopener noreferrer"
           className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-900/20"
         >
@@ -147,7 +214,7 @@ const ContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // // Simple validation to prevent submission without key
     // if (ACCESS_KEY === process.env.MAIL_ACCESS_KEY) {
     //   alert("Error: You must add your Web3Forms Access Key in the code (line ~107) for this to work.");
@@ -185,7 +252,7 @@ const ContactForm = () => {
 
   return (
     <div className="space-y-4 max-w-lg mx-auto bg-slate-800/30 p-8 rounded-2xl border border-slate-700/50">
-      
+
       {result === 'success' ? (
         <div className="flex flex-col items-center justify-center text-center py-10 animate-in fade-in zoom-in">
           <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4">
@@ -193,7 +260,7 @@ const ContactForm = () => {
           </div>
           <h3 className="text-xl font-bold text-white mb-2">Message Sent!</h3>
           <p className="text-slate-400">Thanks for reaching out. I’ll get back to you shortly.</p>
-          <button 
+          <button
             onClick={() => setResult(null)}
             className="mt-6 text-sm text-emerald-400 hover:text-emerald-300 font-medium"
           >
@@ -205,10 +272,10 @@ const ContactForm = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium text-slate-400">Name</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="name"
-                id="name" 
+                id="name"
                 required
                 className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
                 placeholder="John Doe"
@@ -216,10 +283,10 @@ const ContactForm = () => {
             </div>
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-slate-400">Email</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 name="email"
-                id="email" 
+                id="email"
                 required
                 className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
                 placeholder="john@example.com"
@@ -228,10 +295,10 @@ const ContactForm = () => {
           </div>
           <div className="space-y-2">
             <label htmlFor="message" className="text-sm font-medium text-slate-400">Message</label>
-            <textarea 
+            <textarea
               name="message"
-              id="message" 
-              rows="4" 
+              id="message"
+              rows="4"
               required
               className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600 resize-none"
               placeholder="I'd like to discuss a project..."
@@ -249,8 +316,8 @@ const ContactForm = () => {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isSubmitting}
             className="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-lg hover:bg-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2"
           >
@@ -269,6 +336,64 @@ const ContactForm = () => {
   );
 };
 
+const ExperienceCard = ({ job, index }) => (
+  <div className="relative pl-8 md:pl-0">
+    {/* Timeline Line (Desktop) */}
+    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-800 -translate-x-1/2"></div>
+
+    {/* Timeline Dot (Desktop) */}
+    <div className="hidden md:block absolute left-1/2 top-8 w-4 h-4 rounded-full bg-emerald-500 border-4 border-slate-950 -translate-x-1/2 shadow-[0_0_0_4px_rgba(16,185,129,0.2)]"></div>
+
+    {/* Timeline Line (Mobile) */}
+    <div className="md:hidden absolute left-2 top-0 bottom-0 w-0.5 bg-slate-800"></div>
+    {/* Timeline Dot (Mobile) */}
+    <div className="md:hidden absolute left-2 top-8 w-3 h-3 rounded-full bg-emerald-500 -translate-x-[5px]"></div>
+
+    <div className={`md:flex items-center justify-between gap-12 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+      {/* Date/Duration Side */}
+      <div className="md:w-1/2 mb-2 md:mb-0">
+        <div className={`text-slate-400 text-sm md:text-base mb-1 md:mb-0 flex items-center gap-2 ${index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'}`}>
+          <Calendar size={16} className="text-emerald-500" />
+          <span className="font-semibold text-slate-200">{job.period}</span>
+          {/* <span className="text-slate-500">• {job.duration}</span> */}
+          <span className="text-slate-500">
+            • {calculateExperienceFromPeriod(job.period)}
+          </span>
+        </div>
+      </div>
+
+      {/* Content Side */}
+      <div className="md:w-1/2">
+        <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 hover:border-emerald-500/30 transition-all duration-300 shadow-lg group">
+          <h3 className="text-xl font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
+            {job.role}
+          </h3>
+          <h4 className="text-lg text-slate-300 font-medium mb-2 flex items-center gap-2">
+            {job.company}
+            <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              {job.type}
+            </span>
+          </h4>
+          <div className="flex items-center text-slate-500 text-sm mb-4">
+            <MapPin size={14} className="mr-1" />
+            {job.location}
+          </div>
+          <p className="text-slate-400 mb-4 leading-relaxed text-sm">
+            {job.description}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {job.skills.map((skill, i) => (
+              <span key={i} className="text-xs font-medium text-emerald-300 bg-emerald-950/30 px-2 py-1 rounded border border-emerald-900/50">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 // --- Layout & Main App ---
 
 export default function App() {
@@ -280,7 +405,7 @@ export default function App() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-      
+
       const sections = ['home', 'about', 'skills', 'projects', 'contact'];
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -315,7 +440,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
-      
+
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur-md border-b border-slate-800 py-4 shadow-xl' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
@@ -329,7 +454,7 @@ export default function App() {
           <ul className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <li key={link.id}>
-                <button 
+                <button
                   onClick={() => scrollTo(link.id)}
                   className={`text-sm font-medium transition-colors hover:text-emerald-400 ${activeSection === link.id ? 'text-emerald-500' : 'text-slate-400'}`}
                 >
@@ -343,7 +468,7 @@ export default function App() {
           </ul>
 
           {/* Mobile Toggle */}
-          <button 
+          <button
             className="md:hidden text-slate-200 p-2 hover:bg-slate-800 rounded-lg transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
@@ -358,7 +483,7 @@ export default function App() {
           <ul className="flex flex-col gap-6 text-center text-lg">
             {navLinks.map((link) => (
               <li key={link.id}>
-                <button 
+                <button
                   onClick={() => scrollTo(link.id)}
                   className={`block w-full py-4 border-b border-slate-800 ${activeSection === link.id ? 'text-emerald-500' : 'text-slate-400'}`}
                 >
@@ -389,15 +514,15 @@ export default function App() {
           <p className="max-w-xl mx-auto text-slate-400 text-lg mb-10 leading-relaxed animate-in slide-in-from-bottom-5 duration-700 delay-200">
             I build accessible, pixel-perfect, secure, and performant web applications.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in slide-in-from-bottom-5 duration-700 delay-300">
-            <button 
+            <button
               onClick={() => scrollTo('projects')}
               className="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg shadow-lg shadow-emerald-900/20 transition-all hover:scale-105"
             >
               View My Work
             </button>
-            <button 
+            <button
               onClick={() => scrollTo('contact')}
               className="px-8 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg border border-slate-700 transition-all hover:scale-105"
             >
@@ -405,7 +530,7 @@ export default function App() {
             </button>
           </div>
 
-          <button 
+          <button
             onClick={() => scrollTo('about')}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-500 hover:text-emerald-400 transition-colors animate-bounce"
           >
@@ -418,17 +543,17 @@ export default function App() {
       <section id="about" className="py-24 bg-slate-900/30">
         <div className="container mx-auto px-6">
           <SectionHeading subtitle="Get to know me better">About Me</SectionHeading>
-          
+
           <div className="flex flex-col md:flex-row items-center gap-12 max-w-5xl mx-auto">
             <div className="w-full md:w-1/3 flex justify-center">
-               {/* Image Placeholder */}
+              {/* Image Placeholder */}
               <div className="w-64 h-64 relative rounded-2xl overflow-hidden bg-slate-800 border-4 border-slate-700 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-300">
                 <div className="absolute inset-0 flex items-center justify-center text-slate-600 bg-slate-800">
-                   <span className="text-6xl font-bold opacity-20">SK</span>
+                  <span className="text-6xl font-bold opacity-20">SK</span>
                 </div>
               </div>
             </div>
-            
+
             <div className="w-full md:w-2/3 space-y-6">
               <p className="text-lg text-slate-300 leading-relaxed">
                 {PERSONAL_INFO.bio}
@@ -456,11 +581,24 @@ export default function App() {
         </div>
       </section>
 
+      {/* Experience Section */}
+      <section id="experience" className="py-24">
+        <div className="container mx-auto px-6">
+          <SectionHeading subtitle="My professional journey">Work Experience</SectionHeading>
+
+          <div className="max-w-4xl mx-auto flex flex-col gap-10">
+            {EXPERIENCE.map((job, index) => (
+              <ExperienceCard key={index} job={job} index={index} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Skills Section */}
       <section id="skills" className="py-24">
         <div className="container mx-auto px-6">
           <SectionHeading subtitle="My technical toolkit">Tech Stack</SectionHeading>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {SKILLS.map((skill, index) => (
               <SkillCard key={index} skill={skill} />
@@ -473,7 +611,7 @@ export default function App() {
       <section id="projects" className="py-24 bg-slate-900/30">
         <div className="container mx-auto px-6">
           <SectionHeading subtitle="Some things I've built">Featured Projects</SectionHeading>
-          
+
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {PROJECTS.map((project, index) => (
               <ProjectCard key={index} project={project} />
@@ -486,7 +624,7 @@ export default function App() {
       <section id="contact" className="py-24">
         <div className="container mx-auto px-6">
           <SectionHeading subtitle="Let's build something together">Get In Touch</SectionHeading>
-          
+
           <div className="max-w-xl mx-auto text-center mb-10">
             <p className="text-slate-400 text-lg mb-8">
               I am currently looking for full-time opportunities. Whether you have a question or just want to say hi, I’ll try my best to get back to you!
