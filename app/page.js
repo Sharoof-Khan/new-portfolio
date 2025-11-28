@@ -20,9 +20,12 @@ import {
   Loader2,
   CheckCircle2,
   Calendar,
-  MapPin
+  MapPin,
+  FileDown
 } from 'lucide-react';
 
+// const RESUME_LINK = "YOUR_GOOGLE_DRIVE_RESUME_LINK_HERE";
+const RESUME_LINK = "https://drive.google.com/drive/folders/1zFwDk-Uasz2jaCu5L1Ue3cdBciR0P2y5?usp=drive_link";
 export function calculateExperienceFromPeriod(periodStr) {
   const [startStr, endStr] = periodStr.split(" - ");
 
@@ -398,7 +401,7 @@ const ParticleNetworkHero = () => {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
     let particles = [];
-    
+
     // Configuration
     const particleCount = 60;
     const connectionDistance = 150;
@@ -448,7 +451,7 @@ const ParticleNetworkHero = () => {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Update and draw particles
       particles.forEach((particle, i) => {
         particle.update();
@@ -485,8 +488,8 @@ const ParticleNetworkHero = () => {
   }, []);
 
   return (
-    <canvas 
-      ref={canvasRef} 
+    <canvas
+      ref={canvasRef}
       className="absolute inset-0 z-0 pointer-events-none"
     />
   );
@@ -502,7 +505,7 @@ const ParticleNetwork = () => {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
     let particles = [];
-    
+
     // Configuration
     const particleCount = 60;
     const connectionDistance = 150;
@@ -552,7 +555,7 @@ const ParticleNetwork = () => {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Update and draw particles
       particles.forEach((particle, i) => {
         particle.update();
@@ -589,9 +592,9 @@ const ParticleNetwork = () => {
   }, []);
 
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed inset-0 z-0 pointer-events-none" 
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 pointer-events-none"
     />
   );
 };
@@ -642,7 +645,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
-      <ParticleNetwork/>
+      <ParticleNetwork />
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur-md border-b border-slate-800 py-4 shadow-xl' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
@@ -725,6 +728,15 @@ export default function App() {
             >
               View My Work
             </button>
+            <a
+              href={RESUME_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg border border-slate-700 transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <FileDown size={20} />
+              Download Resume
+            </a>
             <button
               onClick={() => scrollTo('contact')}
               className="px-8 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg border border-slate-700 transition-all hover:scale-105"
