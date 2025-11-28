@@ -388,45 +388,211 @@ const ExperienceCard = ({ job, index }) => (
   </div>
 );
 
-const StarBackground = () => {
-  const [stars, setStars] = useState([]);
+const ParticleNetworkHero = () => {
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    // Generate random stars on mount to avoid hydration mismatch
-    const generateStars = () => {
-      const starCount = 75; // Number of stars
-      return Array.from({ length: starCount }).map((_, i) => ({
-        id: i,
-        x: Math.random() * 100, // Random left position (0-100%)
-        y: Math.random() * 100, // Random top position (0-100%)
-        size: Math.random() * 2 + 1, // Random size (1px-3px)
-        delay: Math.random() * 5, // Random animation delay
-        duration: Math.random() * 3 + 2, // Random animation duration
-        opacity: Math.random() * 0.5 + 0.3 // Random base opacity
-      }));
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let particles = [];
+    
+    // Configuration
+    const particleCount = 60;
+    const connectionDistance = 150;
+    const mouseDistance = 200;
+
+    // Handle resize
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
     };
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStars(generateStars());
+
+    // Particle Class
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5; // Velocity X
+        this.vy = (Math.random() - 0.5) * 0.5; // Velocity Y
+        this.size = Math.random() * 2 + 1;
+        this.color = 'rgba(16, 185, 129, 0.5)'; // Emerald-ish
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Bounce off edges
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const initParticles = () => {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      particles.forEach((particle, i) => {
+        particle.update();
+        particle.draw();
+
+        // Check connections
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[j].x - particle.x;
+          const dy = particles[j].y - particle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < connectionDistance) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(16, 185, 129, ${0.15 - distance / connectionDistance * 0.15})`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      {stars.map((star) => (
-        <div
-          key={star.id}
-          className="absolute bg-white rounded-full animate-pulse"
-          style={{
-            left: `${star.x}%`,
-            top: `${star.y}%`,
-            width: `${star.size}px`,
-            height: `${star.size}px`,
-            animationDelay: `${star.delay}s`,
-            animationDuration: `${star.duration}s`,
-            opacity: star.opacity
-          }}
-        />
-      ))}
-    </div>
+    <canvas 
+      ref={canvasRef} 
+      className="absolute inset-0 z-0 pointer-events-none"
+    />
+  );
+};
+
+const ParticleNetwork = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let particles = [];
+    
+    // Configuration
+    const particleCount = 60;
+    const connectionDistance = 150;
+    const mouseDistance = 200;
+
+    // Handle resize
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    };
+
+    // Particle Class
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5; // Velocity X
+        this.vy = (Math.random() - 0.5) * 0.5; // Velocity Y
+        this.size = Math.random() * 2 + 1;
+        this.color = 'rgba(16, 185, 129, 0.5)'; // Emerald-ish
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Bounce off edges
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const initParticles = () => {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      particles.forEach((particle, i) => {
+        particle.update();
+        particle.draw();
+
+        // Check connections
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[j].x - particle.x;
+          const dy = particles[j].y - particle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < connectionDistance) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(16, 185, 129, ${0.15 - distance / connectionDistance * 0.15})`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 z-0 pointer-events-none" 
+    />
   );
 };
 
@@ -476,7 +642,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
-
+      <ParticleNetwork/>
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur-md border-b border-slate-800 py-4 shadow-xl' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
@@ -534,7 +700,7 @@ export default function App() {
       {/* Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
         {/* Background blobs */}
-        <StarBackground/>
+        {/* <ParticleNetwork /> */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
