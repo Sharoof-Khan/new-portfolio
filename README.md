@@ -32,5 +32,5 @@ This project showcases my work, experience, and contact information with clean U
 Clone the repo:
 
 ```bash
-git clone https://github.com/<your-user>/<your-repo>.git
+git clone https://github.com/Sharoof-Khan/new-portfolio.git
 cd new-portfolio
