@@ -215,12 +215,6 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // // Simple validation to prevent submission without key
-    // if (ACCESS_KEY === process.env.MAIL_ACCESS_KEY) {
-    //   alert("Error: You must add your Web3Forms Access Key in the code (line ~107) for this to work.");
-    //   return;
-    // }
-
     setIsSubmitting(true);
     setResult(null);
 
@@ -394,6 +388,48 @@ const ExperienceCard = ({ job, index }) => (
   </div>
 );
 
+const StarBackground = () => {
+  const [stars, setStars] = useState([]);
+
+  useEffect(() => {
+    // Generate random stars on mount to avoid hydration mismatch
+    const generateStars = () => {
+      const starCount = 75; // Number of stars
+      return Array.from({ length: starCount }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100, // Random left position (0-100%)
+        y: Math.random() * 100, // Random top position (0-100%)
+        size: Math.random() * 2 + 1, // Random size (1px-3px)
+        delay: Math.random() * 5, // Random animation delay
+        duration: Math.random() * 3 + 2, // Random animation duration
+        opacity: Math.random() * 0.5 + 0.3 // Random base opacity
+      }));
+    };
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStars(generateStars());
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className="absolute bg-white rounded-full animate-pulse"
+          style={{
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+            animationDelay: `${star.delay}s`,
+            animationDuration: `${star.duration}s`,
+            opacity: star.opacity
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 // --- Layout & Main App ---
 
 export default function App() {
@@ -498,6 +534,7 @@ export default function App() {
       {/* Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
         {/* Background blobs */}
+        <StarBackground/>
         <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
