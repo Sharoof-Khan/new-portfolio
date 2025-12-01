@@ -814,7 +814,7 @@ export default function App() {
         <div className="container mx-auto px-6">
           <SectionHeading subtitle="My technical toolkit">Tech Stack</SectionHeading>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {SKILLS.map((skill, index) => (
               <SkillCard key={index} skill={skill} />
             ))}
@@ -827,7 +827,7 @@ export default function App() {
         <div className="container mx-auto px-6">
           <SectionHeading subtitle="Some things I've built">Featured Projects</SectionHeading>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {PROJECTS.map((project, index) => (
               <ProjectCard key={index} project={project} />
             ))}
