@@ -1,4 +1,4 @@
-# Personal Portfolio – Next.js 16
+# Personal Portfolio – Next.js
 
 A modern, fully responsive developer portfolio built with **Next.js 16**, **Tailwind CSS**, and **App Router**.  
 This project showcases my work, experience, and contact information with clean UI and smooth animations.
