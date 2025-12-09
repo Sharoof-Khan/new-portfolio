@@ -140,7 +140,7 @@ const EXPERIENCE = [
     type: "Full-time",
     period: "Aug 2022 - May 2023",
     duration: "10 mos",
-    location: "Mumbai, Maharashtra, India",
+    location: "Navi Mumbai, Maharashtra, India",
     description: "Developed software solutions with a focus on component reusability and cross-platform compatibility.",
     skills: ["React.js", "React Native"]
   }
@@ -715,7 +715,7 @@ export default function App() {
             {PERSONAL_INFO.name}
           </h1>
           <h2 className="text-2xl md:text-4xl font-medium text-slate-400 mb-8 h-12 animate-in slide-in-from-bottom-5 duration-700 delay-100">
-            Full Stack Web Developer
+            Software Developer
           </h2>
           <p className="max-w-xl mx-auto text-slate-400 text-lg mb-10 leading-relaxed animate-in slide-in-from-bottom-5 duration-700 delay-200">
             I build accessible, pixel-perfect, secure, and performant web applications.
